@@ -103,7 +103,11 @@ const (
 	SpanDubboRequestBody  = "dubbo.request_body"
 	SpanDubboResponseBody = "dubbo.response_body"
 
-	NetWorkAnalyzeMetricGroup = "netAnalyzeMetrics"
+	SpanRocketMQRequestCode    = "rocketmq.request_code"
+	SpanRocketMQResponseCode   = "rocketmq.response_code"
+	SpanRocketMQRequestRemark  = "rocketmq.request_remark"
+	SpanRocketMQResponseRemark = "rocketmq.response_remark"
+	NetWorkAnalyzeMetricGroup  = "netAnalyzeMetrics"
 )
 const (
 	STR_EMPTY = ""

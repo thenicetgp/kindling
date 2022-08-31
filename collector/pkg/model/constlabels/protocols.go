@@ -32,4 +32,10 @@ const (
 	DubboRequestPayload  = "request_payload"
 	DubboResponsePayload = "response_payload"
 	DubboErrorCode       = "dubbo_error_code"
+
+	RocketMQRequestCode    = "rocketmq_request_code"
+	RocketMQResponseCode   = "rocketmq_response_code"
+	RocketMQOpaque         = "rocketmq_opaque"
+	RocketMQRequestRemark  = "rocketmq_request_remark"
+	RocketMQResponseRemark = "rocketmq_response_remark"
 )

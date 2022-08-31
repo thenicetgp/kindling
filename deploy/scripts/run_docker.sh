@@ -20,6 +20,7 @@ fi
 
 docker run --rm -it \
   "${configs[@]}" \
+  -e GOPROXY=https://proxy.golang.com.cn,https://proxy.cn,direct \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "${workspace_root}/../:/kindling" \
   -w "/kindling" \

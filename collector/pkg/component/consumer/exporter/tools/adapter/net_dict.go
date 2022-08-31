@@ -17,6 +17,7 @@ const (
 	MYSQL
 	GRPC
 	DUBBO
+	ROCKETMQ
 	UNSUPPORTED
 )
 
@@ -205,6 +206,10 @@ var entityProtocol = []extraLabelsParam{
 		{constlabels.ResponseContent, constlabels.DubboErrorCode, FromInt64ToString},
 	}, extraLabelsKey{DUBBO}},
 	{[]dictionary{
+		{constlabels.RequestContent, constlabels.RocketMQRequestCode, FromInt64ToString},
+		{constlabels.ResponseContent, constlabels.RocketMQResponseCode, FromInt64ToString},
+	}, extraLabelsKey{ROCKETMQ}},
+	{[]dictionary{
 		{constlabels.RequestContent, constlabels.STR_EMPTY, StrEmpty},
 		{constlabels.ResponseContent, constlabels.STR_EMPTY, StrEmpty},
 	}, extraLabelsKey{UNSUPPORTED}},
@@ -236,6 +241,12 @@ var spanProtocol = []extraLabelsParam{
 		{constlabels.SpanDubboResponseBody, constlabels.DubboResponsePayload, String},
 		{constlabels.SpanDubboErrorCode, constlabels.DubboErrorCode, Int64},
 	}, extraLabelsKey{DUBBO}},
+	{[]dictionary{
+		{constlabels.SpanRocketMQRequestCode, constlabels.RocketMQRequestCode, Int64},
+		{constlabels.SpanRocketMQResponseCode, constlabels.RocketMQResponseCode, Int64},
+		{constlabels.SpanRocketMQRequestRemark, constlabels.RocketMQRequestRemark, String},
+		{constlabels.SpanRocketMQResponseRemark, constlabels.RocketMQResponseRemark, String},
+	}, extraLabelsKey{ROCKETMQ}},
 	{
 		[]dictionary{}, extraLabelsKey{UNSUPPORTED},
 	},
@@ -261,6 +272,9 @@ var topologyProtocol = []extraLabelsParam{
 	{[]dictionary{
 		{constlabels.StatusCode, constlabels.DubboErrorCode, FromInt64ToString},
 	}, extraLabelsKey{DUBBO}},
+	{[]dictionary{
+		{constlabels.StatusCode, constlabels.RocketMQResponseCode, FromInt64ToString},
+	}, extraLabelsKey{ROCKETMQ}},
 	{[]dictionary{
 		{constlabels.StatusCode, constlabels.STR_EMPTY, StrEmpty},
 	}, extraLabelsKey{UNSUPPORTED}},

@@ -81,6 +81,8 @@ func updateProtocolKey(key *extraLabelsKey, labels *model.AttributeMap) *extraLa
 		key.protocol = KAFKA
 	case constvalues.ProtocolDubbo:
 		key.protocol = DUBBO
+	case constvalues.ProtocolRocketMQ:
+		key.protocol = ROCKETMQ
 	default:
 		key.protocol = UNSUPPORTED
 	}
