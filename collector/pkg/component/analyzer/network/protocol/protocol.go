@@ -7,6 +7,7 @@ const (
 	MYSQL     = "mysql"
 	REDIS     = "redis"
 	DUBBO     = "dubbo"
+	ROCKETMQ  = "rocketmq"
 	NOSUPPORT = "NOSUPPORT"
 )
 
@@ -20,7 +21,7 @@ func GetPayLoadLength(protocol string) int {
 	if length, ok := payloadLength[protocol]; ok {
 		return length
 	}
-	return 80
+	return 200
 }
 
 func GetHttpPayLoadLength() int {
