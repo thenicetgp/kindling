@@ -17,8 +17,8 @@ spec:
       serviceAccount: kindling-agent
       containers:
       - name: kindling-agent
-        image: kindlingproject/kindling-agent:latest
-        imagePullPolicy: Always
+        image: kindling-collector:latest
+        imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
         resources:
