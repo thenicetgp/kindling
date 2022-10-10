@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol"
 	"github.com/Kindling-project/kindling/collector/pkg/model/constlabels"
+	"log"
 )
 
 func fastfailRocketMQResponse() protocol.FastFailFn {
@@ -35,6 +36,7 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 				return false, true
 			}
 		} else if serializeType == 1 {
+			log.Println("ROCKETMQ SerializeType is ROCKETMQ")
 			parseHeader(message, header)
 		} else {
 			return false, true
@@ -42,9 +44,10 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 
 		if !message.HasAttribute(constlabels.RocketMQOpaque) ||
 			message.GetIntAttribute(constlabels.RocketMQOpaque) != int64(header.Opaque) {
-
+			log.Printf("ROCKETMQ Opaque is %v \n", int64(header.Opaque))
 			return false, true
 		}
+		log.Printf("ROCKETMQ response Code is %v \n", int64(header.Code))
 		message.AddIntAttribute(constlabels.RocketMQErrCode, int64(header.Code))
 
 		//add RocketMQErrMsg if responseCode > 0
@@ -56,6 +59,7 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 			} else {
 				message.AddStringAttribute(constlabels.RocketMQErrMsg, fmt.Sprintf("error:response code is %v", header.Code))
 			}
+			log.Printf("ROCKETMQ ErrCode is %v \n", int64(header.Code))
 			message.AddBoolAttribute(constlabels.IsError, true)
 			message.AddIntAttribute(constlabels.ErrorType, int64(constlabels.ProtocolError))
 		}
