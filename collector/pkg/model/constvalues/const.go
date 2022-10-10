@@ -13,14 +13,22 @@ const (
 	ResponseIo = "response_io"
 
 	SpanInfo = "KSpanInfo"
+
+	ProtocolError   = "error"
+	ProtocolNoError = "noerror"
+
+	ProtocolErrorStatus   = "1"
+	ProtocolNoErrorStatus = "0"
 )
 
 const (
-	ProtocolHttp  = "http"
-	ProtocolHttp2 = "http2"
-	ProtocolGrpc  = "grpc"
-	ProtocolDubbo = "dubbo"
-	ProtocolDns   = "dns"
-	ProtocolKafka = "kafka"
-	ProtocolMysql = "mysql"
+	ProtocolHttp     = "http"
+	ProtocolHttp2    = "http2"
+	ProtocolGrpc     = "grpc"
+	ProtocolDubbo    = "dubbo"
+	ProtocolDns      = "dns"
+	ProtocolKafka    = "kafka"
+	ProtocolMysql    = "mysql"
+	ProtocolRedis    = "redis"
+	ProtocolRocketMQ = "rocketmq"
 )

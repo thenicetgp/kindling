@@ -17,6 +17,8 @@ const (
 	MYSQL
 	GRPC
 	DUBBO
+	REDIS
+	ROCKETMQ
 	UNSUPPORTED
 )
 
@@ -28,6 +30,8 @@ const (
 	Bool
 	StrEmpty
 	FromInt64ToString
+	FromProtoclErrorToString
+	FromProtocolErrorToStatus
 )
 
 const (
@@ -205,6 +209,14 @@ var entityProtocol = []extraLabelsParam{
 		{constlabels.ResponseContent, constlabels.DubboErrorCode, FromInt64ToString},
 	}, extraLabelsKey{DUBBO}},
 	{[]dictionary{
+		{constlabels.RequestContent, constlabels.ContentKey, String},
+		{constlabels.ResponseContent, constlabels.STR_EMPTY, FromProtoclErrorToString},
+	}, extraLabelsKey{REDIS}},
+	{[]dictionary{
+		{constlabels.RequestContent, constlabels.ContentKey, String},
+		{constlabels.ResponseContent, constlabels.RocketMQErrCode, FromInt64ToString},
+	}, extraLabelsKey{ROCKETMQ}},
+	{[]dictionary{
 		{constlabels.RequestContent, constlabels.STR_EMPTY, StrEmpty},
 		{constlabels.ResponseContent, constlabels.STR_EMPTY, StrEmpty},
 	}, extraLabelsKey{UNSUPPORTED}},
@@ -217,9 +229,9 @@ var spanProtocol = []extraLabelsParam{
 		{constlabels.SpanHttpStatusCode, constlabels.HttpStatusCode, Int64},
 		{constlabels.SpanHttpTraceId, constlabels.HttpApmTraceId, String},
 		{constlabels.SpanHttpTraceType, constlabels.HttpApmTraceType, String},
-		{constlabels.SpanHttpRequestHeaders, constlabels.HttpRequestPayload, String},
+		{constlabels.SpanHttpRequestHeaders, constlabels.RequestPayload, String},
 		{constlabels.SpanHttpRequestBody, constlabels.STR_EMPTY, StrEmpty},
-		{constlabels.SpanHttpResponseHeaders, constlabels.HttpResponsePayload, String},
+		{constlabels.SpanHttpResponseHeaders, constlabels.ResponsePayload, String},
 		{constlabels.SpanHttpResponseBody, constlabels.STR_EMPTY, StrEmpty},
 	}, extraLabelsKey{HTTP}},
 	{[]dictionary{
@@ -232,10 +244,20 @@ var spanProtocol = []extraLabelsParam{
 		{constlabels.SpanDnsRCode, constlabels.DnsRcode, FromInt64ToString},
 	}, extraLabelsKey{DNS}},
 	{[]dictionary{
-		{constlabels.SpanDubboRequestBody, constlabels.DubboRequestPayload, String},
-		{constlabels.SpanDubboResponseBody, constlabels.DubboResponsePayload, String},
+		{constlabels.SpanDubboRequestBody, constlabels.RequestPayload, String},
+		{constlabels.SpanDubboResponseBody, constlabels.ResponsePayload, String},
 		{constlabels.SpanDubboErrorCode, constlabels.DubboErrorCode, Int64},
 	}, extraLabelsKey{DUBBO}},
+	{[]dictionary{
+		{constlabels.SpanRedisCommand, constlabels.RedisCommand, String},
+		{constlabels.SpanRedisErrorMsg, constlabels.RedisErrMsg, String},
+		{constlabels.SpanRedisRequestPayload, constlabels.RequestPayload, String},
+		{constlabels.SpanRedisResponsePayload, constlabels.ResponsePayload, String},
+	}, extraLabelsKey{REDIS}},
+	{[]dictionary{
+		{constlabels.SpanRocketMQRequestMsg, constlabels.RocketMQRequestMsg, String},
+		{constlabels.SpanRocketMQErrMsg, constlabels.RocketMQErrMsg, String},
+	}, extraLabelsKey{ROCKETMQ}},
 	{
 		[]dictionary{}, extraLabelsKey{UNSUPPORTED},
 	},
@@ -261,6 +283,12 @@ var topologyProtocol = []extraLabelsParam{
 	{[]dictionary{
 		{constlabels.StatusCode, constlabels.DubboErrorCode, FromInt64ToString},
 	}, extraLabelsKey{DUBBO}},
+	{[]dictionary{
+		{constlabels.StatusCode, constlabels.STR_EMPTY, FromProtocolErrorToStatus},
+	}, extraLabelsKey{REDIS}},
+	{[]dictionary{
+		{constlabels.StatusCode, constlabels.RocketMQErrCode, FromInt64ToString},
+	}, extraLabelsKey{ROCKETMQ}},
 	{[]dictionary{
 		{constlabels.StatusCode, constlabels.STR_EMPTY, StrEmpty},
 	}, extraLabelsKey{UNSUPPORTED}},

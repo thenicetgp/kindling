@@ -11,6 +11,7 @@ import (
 	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol/kafka"
 	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol/mysql"
 	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol/redis"
+	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol/rocketmq"
 )
 
 type ParserFactory struct {
@@ -36,6 +37,7 @@ func NewParserFactory(options ...Option) *ParserFactory {
 	factory.protocolParsers[protocol.REDIS] = redis.NewRedisParser()
 	factory.protocolParsers[protocol.DUBBO] = dubbo.NewDubboParser()
 	factory.protocolParsers[protocol.DNS] = dns.NewDnsParser()
+	factory.protocolParsers[protocol.ROCKETMQ] = rocketmq.NewRocketMQParser()
 	factory.protocolParsers[protocol.NOSUPPORT] = generic.NewGenericParser()
 
 	return factory

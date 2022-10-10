@@ -31,7 +31,7 @@ func NewDefaultConfig() *Config {
 		ConntrackMaxStateSize: 131072,
 		ConntrackRateLimit:    500,
 		ProcRoot:              "/proc",
-		ProtocolParser:        []string{"http", "mysql", "dns", "redis", "kafka", "dubbo"},
+		ProtocolParser:        []string{"http", "mysql", "dns", "redis", "kafka", "dubbo", "rocketmq"},
 		ProtocolConfigs: []ProtocolConfig{
 			{
 				Key:           "http",
@@ -64,6 +64,11 @@ func NewDefaultConfig() *Config {
 			{
 				Key:       "s3",
 				Ports:     []uint32{9190},
+				Threshold: 100,
+			},
+			{
+				Key:       "rocketmq",
+				Ports:     []uint32{9876},
 				Threshold: 100,
 			},
 		},

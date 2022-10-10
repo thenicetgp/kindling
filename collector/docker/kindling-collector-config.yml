@@ -44,7 +44,7 @@ analyzers:
     proc_root: /proc
     # The protocol parsers which is enabled
     # When dissectors are enabled, agent will analyze the payload and enrich metric/trace with its content.
-    protocol_parser: [ http, mysql, dns, redis, kafka ]
+    protocol_parser: [ http, mysql, dns, redis, kafka, rocketmq ]
     # Which URL clustering method should be used to shorten the URL of HTTP request.
     # This is useful for decrease the cardinality of URLs.
     # Valid values: ["noparam", "alphabet"]
@@ -79,9 +79,15 @@ analyzers:
       - key: "dns"
         ports: [ 53 ]
         slow_threshold: 100
+      - key: "rocketmq"
+        ports: [ 9876, 10911 ]
+        slow_threshold: 500
 
 processors:
   k8smetadataprocessor:
+    # Set "enable" false if you want to run the agent in the non-Kubernetes environment.
+    # Otherwise, the agent will panic if it can't connect to the API-server.
+    enable: true
     kube_auth_type: kubeConfig
     kube_config_dir: /root/.kube/config
     grace_delete_period: 60
@@ -156,6 +162,12 @@ observability:
   logger:
     console_level: info # debug,info,warn,error,none
     file_level: info
+    # debug_selector is used to filter debug message from different components
+    # 1. This filter will not take effect when there is no element in the debug_selector list
+    # 2. If the list is not empty, only the components contained in this list will print debug message
+    # 3. The name of each component is defined above, such as `receiver.cgoreceiver`, `exporter.otelexporter`, only the second part of the config name needed
+    # e.g debug_selector: ["cgoreceiver","otelexporter"]
+    debug_selector: []
     file_rotation:
       filename: agent.log
       maxsize: 512 #MB

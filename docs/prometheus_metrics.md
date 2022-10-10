@@ -1,6 +1,6 @@
 # Prometheus Metrics Description
 ## Service Metrics
-Service metrics are generated from the server-side events, which are used to show the quality of service. 
+Service metrics are generated from the server-side events, which are used to show the quality of service.
 ### Metrics List
 | **Metric Name** | **Type** | **Description** |
 | --- | --- | --- |
@@ -34,28 +34,28 @@ Service metrics are generated from the server-side events, which are used to sho
 **Note 2**: The labels `request_content` and `response_content` hold different values when `protocol` is different.
 
 - When protocol is `http`:
-  
+
 | **Label** | **Example** | **Notes** |
 | --- | --- | --- |
 | `request_content` | /test/api | Endpoint of HTTP request. URL has been truncated to avoid high-cardinality. |
 | `response_content` | 200 | 'Status Code' of HTTP response. |
 
 - When protocol is `dns`:
-  
+
 | **Label** | **Example** | **Notes** |
 | --- | --- | --- |
 | `request_content` | www.google.com | Domain to be queried |
 | `response_content` | 0 | "rcode" of DNS response. Including 0, 1, 2, 3, 4 |
 
 - When protocol is `mysql`:
-  
+
 | **Label** | **Example** | **Notes** |
 | --- | --- | --- |
 | `request_content` | select employee | SQL of MySQL. SQL has been truncated to avoid high-cardinality. The format is ['operation' 'space' 'table' '*']. |
 | `response_content` | 1064 | Error code of MySQL. Only applicable when the response is in error type. See [codes introduction](https://dev.mysql.com/doc/mysql-errors/5.7/en/error-reference-introduction.html).|
 
 - When protocol is `kafka`:
-  
+
 | **Label** | **Example** | **Notes** |
 | --- | --- | --- |
 | `request_content` | user-msg-topic | Topic of Kafka request. |
@@ -67,6 +67,20 @@ Service metrics are generated from the server-side events, which are used to sho
 | --- |-------------------------|--------------------------|
 | `request_content` | io.kindling.dubbo.api.service.OrderService#order | Service Info. The format of service is `package.class#method`                                                                                            |
 | `response_content` | 20 | "error_code" of Dubbo. 20 means OK, more details at the [docs](https://dubbo.apache.org/en/blog/2018/10/05/introduction-to-the-dubbo-protocol/#dubbo-protocol-details). |
+
+- When protocol is `redis`:
+
+| **Label** | **Example**                   | **Notes**                           |
+| --- |-------------------------|--------------------------|
+| `request_content` | GET | The command of the Redis request. |
+| `response_content` | noerror | The value is either `error` or `noerror`. |
+
+- When protocol is `rocketmq`:
+
+| **Label** | **Example** | **Notes**                                                                                                                                                                                                                               |
+| --- |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `request_content` | TopicTest   | Topic of RocketMQ request.If topic is not exist,use [requestMsg](https://github.com/apache/rocketmq/blob/fcfe26e4443dd24b1055899266d1bd81060ee118/common/src/main/java/org/apache/rocketmq/common/protocol/RequestCode.java) instead.                                                                                                                                                             |
+| `response_content` | 0           | Code of RocketMQ response.0 means OK,>0 means error,more details at [docs](https://github.com/apache/rocketmq/blob/fcfe26e4443dd24b1055899266d1bd81060ee118/common/src/main/java/org/apache/rocketmq/common/protocol/ResponseCode.java) |
 
 - For other cases, the `request_content` and `response_content` are both empty.
 
@@ -81,7 +95,7 @@ exporters:
 
 ## Topology Metrics
 
-Topology metrics are typically generated from the client-side events, which are used to show the service dependencies map, so the metrics are called "topology". Some timeseries may be generated from the server-side events, which contain a non-empty label `dst_container_id`. These timeseries are generated only when the source IP is not the pod's IP inside the Kubernetes cluster, which are useful when there is no agent installed on the client-side. 
+Topology metrics are typically generated from the client-side events, which are used to show the service dependencies map, so the metrics are called "topology". Some timeseries may be generated from the server-side events, which contain a non-empty label `dst_container_id`. These timeseries are generated only when the source IP is not the pod's IP inside the Kubernetes cluster, which are useful when there is no agent installed on the client-side.
 
 ### Metrics List
 | **Metric Name** | **Type** | **Description** |
@@ -123,16 +137,18 @@ Topology metrics are typically generated from the client-side events, which are 
 **Note 1**: We define two custom terms for the label `src_namespace` and `dst_namespace`, which are `NOT_FOUND_INTERNAL` and `NOT_FOUND_EXTERNAL`. The meanings are described as follows. These terms also apply to other metrics in this doc.
 
 These two terms are composed of two parts.
-1. **NOT_FOUND**: `NOT_FOUND` means the IP is neither a pod's one nor a service's one in the current Kubernetes cluster. The IP could belong to a host or an external service. 
+1. **NOT_FOUND**: `NOT_FOUND` means the IP is neither a pod's one nor a service's one in the current Kubernetes cluster. The IP could belong to a host or an external service.
 2. **INTERNAL or EXTERNAL**: There are two cases in which `INTERNAL` will be set. The first case is when the IP belongs to a node that resides in the current Kubernetes cluster. The second case is when the `source` or `destination` is running on the same host with the kindling agent, which is generally applicable for non-Kubernetes clusters. `EXTERNAL` is set for other cases if the IP is `NOT_FOUND`. Note another Kubernetes cluster is also considered "external".
 
 **Note 2**: The field "status_code" holds different values when "protocol" is different.
 
-- **HTTP**: 'Status Code' of HTTP response. 
-- **DNS**: rcode of DNS response.
-- **MySQL**: Error code of the error response.
-- **DUBBO**: 'Error Code' of Dubbo request.
-- **others**: empty temporarily
+- **http**: `Status Code` of HTTP response.
+- **dns**: `rcode` of DNS response.
+- **mysql**: `Error Code` of the error response.
+- **dubbo**: `Error Code` of Dubbo request.
+- **redis**: `0` if there is no error; `1` otherwise.
+- **rocketmq**: `Code` of RocketMQ response
+- **others**: empty temporarily.
 
 **Note 3**: The histogram metric `kindling_topology_request_average_duration_nanoseconds_*` is disabled by default as it could be high-cardinality. If this metric is needed, please add a new line to the `exporters.otelexporter.metric_aggregation_map` section of the configuration file.
 ```yaml
@@ -143,7 +159,7 @@ exporters:
       kindling_topology_request_average_duration_nanoseconds: histogram 
 ```
 ## Trace As Metric
-We made some rules for considering whether a request is abnormal. For the abnormal request, the detail request information is considered as useful for debugging or profiling. We name this kind of data "trace". It is not a good practice to store such data in Prometheus as some labels are high-cardinality, so we picked up some labels from the original ones to generate a new kind of metric, which is called "Trace As Metric". The following table shows what labels this metric contains.  
+We made some rules for considering whether a request is abnormal. For the abnormal request, the detail request information is considered as useful for debugging or profiling. We name this kind of data "trace". It is not a good practice to store such data in Prometheus as some labels are high-cardinality, so we picked up some labels from the original ones to generate a new kind of metric, which is called "Trace As Metric". The following table shows what labels this metric contains.
 
 ### Metrics List
 | **Metric Name** | **Type** | **Description** |
