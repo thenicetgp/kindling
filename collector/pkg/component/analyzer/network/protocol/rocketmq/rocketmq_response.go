@@ -47,6 +47,7 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 			log.Printf("ROCKETMQ Opaque is %v \n", int64(header.Opaque))
 			return false, true
 		}
+		log.Printf("ROCKETMQ response Opaque is %v\n", int64(header.Opaque))
 		log.Printf("ROCKETMQ response Code is %v \n", int64(header.Code))
 		message.AddIntAttribute(constlabels.RocketMQErrCode, int64(header.Code))
 
@@ -59,6 +60,7 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 			} else {
 				message.AddStringAttribute(constlabels.RocketMQErrMsg, fmt.Sprintf("error:response code is %v", header.Code))
 			}
+			log.Printf("ROCKETMQ err response Code is %v \n", header.Code)
 			log.Printf("ROCKETMQ ErrCode is %v \n", int64(header.Code))
 			message.AddBoolAttribute(constlabels.IsError, true)
 			message.AddIntAttribute(constlabels.ErrorType, int64(constlabels.ProtocolError))
