@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/Kindling-project/kindling/collector/pkg/component/analyzer/network/protocol"
 	"github.com/Kindling-project/kindling/collector/pkg/model/constlabels"
-	"log"
 )
 
 func fastfailRocketMQRequest() protocol.FastFailFn {
@@ -43,9 +42,9 @@ func parseRocketMQRequest() protocol.ParsePkgFn {
 		// Store the parsed attribute via AddStringAttribute() or AttIntAttribute()
 		message.AddStringAttribute(constlabels.RocketMQRequestMsg, requestMsgMap[header.Code])
 		message.AddIntAttribute(constlabels.RocketMQOpaque, int64(header.Opaque))
-		log.Printf("header request code is %v", header.Code)
-		log.Printf("header request flag is %v", header.Flag)
-		log.Printf("header request Opaque is %v", header.Opaque)
+		//log.Printf("header request code is %v", header.Code)
+		//log.Printf("header request flag is %v", header.Flag)
+		//log.Printf("header request Opaque is %v", header.Opaque)
 
 		//topicName maybe be stored in key `topic` or `b`
 		if header.ExtFields["topic"] != "" {

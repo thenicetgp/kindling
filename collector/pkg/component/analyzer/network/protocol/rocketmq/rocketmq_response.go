@@ -47,10 +47,10 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 			log.Printf("ROCKETMQ Opaque is %v \n", int64(header.Opaque))
 			return false, true
 		}
-		log.Printf("ROCKETMQ response Opaque is %v\n", header.Opaque)
-		log.Printf("ROCKETMQ response Code is %v \n", header.Code)
-		log.Printf("ROCKETMQ response Flag is %v \n", header.Flag)
-		log.Printf("ROCKETMQ response language is %v \n", header.Language)
+		//log.Printf("ROCKETMQ response Opaque is %v\n", header.Opaque)
+		//log.Printf("ROCKETMQ response Code is %v \n", header.Code)
+		//log.Printf("ROCKETMQ response Flag is %v \n", header.Flag)
+		//log.Printf("ROCKETMQ response language is %v \n", header.Language)
 		message.AddIntAttribute(constlabels.RocketMQErrCode, int64(header.Code))
 
 		//add RocketMQErrMsg if responseCode > 0
@@ -58,6 +58,7 @@ func parseRocketMQResponse() protocol.ParsePkgFn {
 			if _, ok := responseErrMsgMap[header.Code]; ok {
 				message.AddStringAttribute(constlabels.RocketMQErrMsg, responseErrMsgMap[header.Code])
 			} else if header.Remark != "" {
+				log.Printf("ROCKETMQ Remark is %v \n", header.Remark)
 				message.AddStringAttribute(constlabels.RocketMQErrMsg, header.Remark)
 			} else {
 				message.AddStringAttribute(constlabels.RocketMQErrMsg, fmt.Sprintf("error:response code is %v", header.Code))
